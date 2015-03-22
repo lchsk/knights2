@@ -29,6 +29,7 @@ K.Game.prototype.draw = function()
   this.map.world.position.x = - this.camera._x;
   this.map.world.position.y = - this.camera._y;
 
+
   this.renderer.render(this.stage);
 
   requestAnimationFrame(this.draw.bind(this));

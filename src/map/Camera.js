@@ -48,6 +48,35 @@ K.Camera.prototype.update = function()
   }
 
   this._secureCamera();
+
+  this._hideUnusedSprites();
+};
+
+K.Camera.prototype._hideUnusedSprites = function()
+{
+  for (var i = 0; i < this.game.map.data.children.length; i++)
+  {
+    var sprite = this.game.map.data.children[i];
+
+    if (sprite.x + 32 > this._x && sprite.x < this._x + this.width)
+      sprite.visible = true;
+    else
+      sprite.visible = false;
+
+    if (sprite.y + 32 > this._y && sprite.y < this._y + this.width)
+      sprite.visible = true;
+    else
+      sprite.visible = false;
+
+    // if (sprite.position.x + 32 < this._x)
+      // sprite.visible = false;
+    // else
+      // sprite.visible = true;
+
+    // if (sprite.position.x > this._x + this.width)
+      // sprite.visible = false;
+  }
+
 };
 
 K.Camera.prototype._secureCamera = function()

@@ -11,11 +11,13 @@ K.MapLoader = function(game, filename)
   var loader = new K.JSONLoader(filename);
   loader.loadJSON(this._interpretJSON.bind(this));
   this.world = new PIXI.DisplayObjectContainer();
-  this.map = new PIXI.DisplayObjectContainer();
+
+  // Map data
+  this.data = new PIXI.DisplayObjectContainer();
   this.camera = new PIXI.DisplayObjectContainer();
   console.log(this.camera);
 
-  this.world.addChild(this.map);
+  this.world.addChild(this.data);
 
   this.game.stage.addChild(this.world);
   this.game.stage.renderable = false;
@@ -95,7 +97,6 @@ K.MapLoader.prototype._interpretJSON = function(json)
   // Pixels
   this.world_height = this.map_height * this.tile_height;
 
-  console.log(this.world_width, this.world_height);
 
   var x = 0;
   var y = 0;
@@ -123,8 +124,7 @@ K.MapLoader.prototype._interpretJSON = function(json)
         var sprite = new PIXI.Sprite(b);
         sprite.position.x = x;
         sprite.position.y = y;
-        this.map.addChild(sprite);
-        // console.log(x, y);
+        this.data.addChild(sprite);
 
     }
       x += this.tile_width;
@@ -142,7 +142,6 @@ K.MapLoader.prototype._interpretJSON = function(json)
 
   // this.game.stage.position.x = 20;
   // this.game.stage.scale.x = 0.5;
-  console.log(this.game.stage.position);
 
   this.game.draw.bind(this.game)();
 };
