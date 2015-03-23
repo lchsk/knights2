@@ -143,5 +143,5 @@ K.MapLoader.prototype._interpretJSON = function(json)
   // this.game.stage.position.x = 20;
   // this.game.stage.scale.x = 0.5;
 
-  this.game.draw.bind(this.game)();
+  this.game.create.bind(this.game)();
 };

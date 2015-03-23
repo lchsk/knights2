@@ -12,7 +12,7 @@ K.Game = function(fps)
   this.timeSinceLastFrame = 0;
 
   // Current FPS that limits the rendering
-  this.requestedFrameRate = 1000/fps;
+  this.requestedFrameRate = 1000 / fps;
 
   this.renderer = new PIXI.CanvasRenderer(w, h);
   document.body.appendChild(this.renderer.view);
@@ -21,15 +21,21 @@ K.Game = function(fps)
   this.stage = new PIXI.Stage(0xFF0000);
 
   this.map = new K.MapLoader(this, './test.json');
+  // map is loaded asynchronously!!!
 
   this.camera = new K.Camera(w, h, this);
+
 };
 
 K.Game.prototype.constructor = K.Game;
 
+// At this point, the map is loaded
 K.Game.prototype.create = function()
 {
+  this.camera.set(500, 0);
+  this.camera.animateTo(1000, 200, 3);
 
+  this.draw();
 };
 
 K.Game.prototype.frameRate = function()
@@ -48,10 +54,10 @@ K.Game.prototype.draw = function()
 {
   this.update();
 
-  // if (K.Key.isDown(K.Key.LEFT))
-  // {
-  //   this.camera.set(5000, 0);
-  // }
+  if (K.Key.isDown(K.Key.LEFT))
+  {
+    this.camera.set(5000, 0);
+  }
   //
   // // if (K.Key.isDown(K.Key.RIGHT))
   // {

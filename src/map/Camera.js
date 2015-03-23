@@ -4,11 +4,24 @@ K.Camera = function(width, height, game)
   this.height = height;
   this.game = game;
 
-  this.userCanScroll = true;
+  // this.userCanScroll = true;
+
+  // True if the map is being automatically scrolled
   this.isAutoMoving = false;
 
-  this._autoScroll = new PIXI.Point(0, 0);
+  // If isAutoMoving == true, this variable holds the time
+  // in which the movement should be completed.
+  // [miliseconds]
+  this.maxTime = 0;
 
+  // How much time passed since the movement began
+  // [miliseconds]
+  this.time = 0;
+
+  this._autoScrollStart = new PIXI.Point(0, 0);
+  this._autoScrollEnd = new PIXI.Point(0, 0);
+
+  // Current position of the map
   this._x = 0;
   this._y = 0;
 
@@ -16,13 +29,17 @@ K.Camera = function(width, height, game)
   // top, right, bottom, left
   this._screen_pct = [0.1, 0.9, 0.9, 0.1];
 
+  // How fast a user can scroll the map
   this.speed = 3;
+
 };
 
 K.Camera.prototype.constructor = K.Camera;
 
-K.Camera.prototype.update = function()
+K.Camera.prototype._updateUserScrolling = function()
 {
+  if (this.isAutoMoving) return;
+
   var mouse = this.game.stage.getMousePosition();
 
   // a simple hack to override initial value of the mouse position
@@ -65,6 +82,30 @@ K.Camera.prototype.update = function()
   }
 };
 
+K.Camera.prototype.update = function()
+{
+  this._updateAutoScrolling();
+  this._updateUserScrolling();
+};
+
+K.Camera.prototype._updateAutoScrolling = function()
+{
+  if (this.isAutoMoving)
+  {
+    var factor = K.Easing.easeInOutCubic(this.time / this.maxTime);
+
+    this._x = factor * (this._autoScrollEnd.x - this._autoScrollStart.x) + this._autoScrollStart.x;
+    this._y = factor * (this._autoScrollEnd.y - this._autoScrollStart.y) + this._autoScrollStart.y;
+
+    this.time += this.game.timeSinceLastFrame;
+
+    if (this.time > this.maxTime)
+    {
+      this.isAutoMoving = false;
+    }
+  }
+};
+
 K.Camera.prototype.set = function(x, y)
 {
   this._x = x;
@@ -74,44 +115,24 @@ K.Camera.prototype.set = function(x, y)
   this._hideUnusedSprites();
 };
 
-EasingFunctions = {
-  linear: function (t) { return t },
-  easeInQuad: function (t) { return t*t },
-  easeOutQuad: function (t) { return t*(2-t) },
-  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
-  easeInCubic: function (t) { return t*t*t },
-  easeOutCubic: function (t) { return (--t)*t*t+1 },
-  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
-  easeInQuart: function (t) { return t*t*t*t },
-  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
-  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
-  easeInQuint: function (t) { return t*t*t*t*t },
-  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
-  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
-}
-
-K.Camera.prototype.animateTo = function(x, y)
+K.Camera.prototype.animateTo = function(x, y, maxTime)
 {
-  if (this.isAutoMoving)
+  if ( ! this.isAutoMoving)
   {
-    var dx = this._x - this._autoScroll.x;
-    var dy = this._y - this._autoScroll.y;
+    this._autoScrollStart.x = this._x;
+    this._autoScrollStart.y = this._y;
+    this._securePosition(this._autoScrollStart);
 
-    var X = x - this._autoScroll.x
-    var Y = y - this._autoScroll.y;
+    this._autoScrollEnd.x = x;
+    this._autoScrollEnd.y = y;
+    this._securePosition(this._autoScrollEnd);
 
-    var xp = dx / X + 1;
-
-    // this._x += EasingFunctions.easeOutQuad(xp * 2);
-
-  }
-  else
-  {
-    this._autoScroll.x = this._x;
-    this._autoScroll.y = this._y;
     this.isAutoMoving = true;
-  }
+    this.maxTime = maxTime * 1000;
+    this.time = 0.0;
 
+    this._hideUnusedSprites();
+  }
 };
 
 K.Camera.prototype._hideUnusedSprites = function()
@@ -120,25 +141,34 @@ K.Camera.prototype._hideUnusedSprites = function()
   {
     var sprite = this.game.map.data.children[i];
 
-    if (sprite.x + 32 > this._x && sprite.x < this._x + this.width)
+    if (sprite.x + this.game.map.tile_width > this._x && sprite.x < this._x + this.width)
       sprite.visible = true;
     else
       sprite.visible = false;
 
-    if (sprite.y + 32 > this._y && sprite.y < this._y + this.width)
+    if (sprite.y + this.game.map.tile_height > this._y && sprite.y < this._y + this.width)
       sprite.visible = true;
     else
       sprite.visible = false;
-
   }
+};
 
+K.Camera.prototype._securePosition = function(point)
+{
+  point.x = Math.max(point.x, 0);
+  point.x = Math.min(point.x, this.game.map.world_width - this.width);
+
+  point.y = Math.max(point.y, 0);
+  point.y = Math.min(point.y, this.game.map.world_height - this.height);
 };
 
 K.Camera.prototype._secureCamera = function()
 {
-  this._x = Math.max(this._x, 0);
-  this._x = Math.min(this._x, this.game.map.world_width - this.width);
-
-  this._y = Math.max(this._y, 0);
-  this._y = Math.min(this._y, this.game.map.world_height - this.height);
+  if (this.game.map.world_width && this.game.map.world_height)
+  {
+    var p = new PIXI.Point(this._x, this._y);
+    this._securePosition(p);
+    this._x = p.x;
+    this._y = p.y;
+  }
 };
