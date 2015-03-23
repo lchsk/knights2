@@ -4,6 +4,11 @@ K.Camera = function(width, height, game)
   this.height = height;
   this.game = game;
 
+  this.userCanScroll = true;
+  this.isAutoMoving = false;
+
+  this._autoScroll = new PIXI.Point(0, 0);
+
   this._x = 0;
   this._y = 0;
 
@@ -19,37 +24,94 @@ K.Camera.prototype.constructor = K.Camera;
 K.Camera.prototype.update = function()
 {
   var mouse = this.game.stage.getMousePosition();
-  // console.log(mouse);
-  // if (mouse.x < 0 || mouse.x > this.width)
-    // return;
+
+  // a simple hack to override initial value of the mouse position
+  if (mouse.x == 0 && mouse.y == 0) return;
 
   var w = mouse.x / this.width;
   var h = mouse.y / this.height;
+
+  var moved = false;
 
   if (w >= 0 && w < this._screen_pct[3])
   {
     // Move left
     this._x -= this.speed;
+    moved = true;
   }
   if (w > this._screen_pct[1] && w <= 1)
   {
     // Move right
     this._x += this.speed;
+    moved = true;
   }
   if (h >= 0 && h < this._screen_pct[0])
   {
     // Move up
     this._y -= this.speed;
+    moved = true;
   }
   if (h <= 1 && h > this._screen_pct[2])
   {
     // Move down
     this._y += this.speed;
+    moved = true;
   }
 
-  this._secureCamera();
+  if (moved)
+  {
+    this._secureCamera();
+    this._hideUnusedSprites();
+  }
+};
 
+K.Camera.prototype.set = function(x, y)
+{
+  this._x = x;
+  this._y = y;
+
+  this._secureCamera();
   this._hideUnusedSprites();
+};
+
+EasingFunctions = {
+  linear: function (t) { return t },
+  easeInQuad: function (t) { return t*t },
+  easeOutQuad: function (t) { return t*(2-t) },
+  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+  easeInCubic: function (t) { return t*t*t },
+  easeOutCubic: function (t) { return (--t)*t*t+1 },
+  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+  easeInQuart: function (t) { return t*t*t*t },
+  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+  easeInQuint: function (t) { return t*t*t*t*t },
+  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+}
+
+K.Camera.prototype.animateTo = function(x, y)
+{
+  if (this.isAutoMoving)
+  {
+    var dx = this._x - this._autoScroll.x;
+    var dy = this._y - this._autoScroll.y;
+
+    var X = x - this._autoScroll.x
+    var Y = y - this._autoScroll.y;
+
+    var xp = dx / X + 1;
+
+    // this._x += EasingFunctions.easeOutQuad(xp * 2);
+
+  }
+  else
+  {
+    this._autoScroll.x = this._x;
+    this._autoScroll.y = this._y;
+    this.isAutoMoving = true;
+  }
+
 };
 
 K.Camera.prototype._hideUnusedSprites = function()
@@ -68,13 +130,6 @@ K.Camera.prototype._hideUnusedSprites = function()
     else
       sprite.visible = false;
 
-    // if (sprite.position.x + 32 < this._x)
-      // sprite.visible = false;
-    // else
-      // sprite.visible = true;
-
-    // if (sprite.position.x > this._x + this.width)
-      // sprite.visible = false;
   }
 
 };
