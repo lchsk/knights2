@@ -32,8 +32,8 @@ K.Game.prototype.constructor = K.Game;
 // At this point, the map is loaded
 K.Game.prototype.create = function()
 {
-  this.camera.set(500, 0);
-  this.camera.animateTo(1000, 200, 3);
+  // this.camera.set(500, 0);
+  // this.camera.animateTo(1000, 200, 3);
 
   this.draw();
 };

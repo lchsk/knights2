@@ -97,36 +97,27 @@ K.MapLoader.prototype._interpretJSON = function(json)
   // Pixels
   this.world_height = this.map_height * this.tile_height;
 
-
-  var x = 0;
-  var y = 0;
-
-  for(var i = 0; i < json.layers[0].data.length; i++)
-  // for (var i = 1; i <= 50; i++)
+  for(var j = 0; j < json.layers.length; j++)
   {
-    // for (var j = 1; j <= 50; j++)
+    var x = 0;
+    var y = 0;
+
+    for(var i = 0; i < json.layers[j].data.length; i++)
     {
-      var v = json.layers[0].data[i];
+      var v = json.layers[j].data[i];
 
       if (v > 0)
       {
-        // console.log(v);
-
         var tileset = this._getTileset(v)
-
-        // console.log(tileset);
-
-      var r = this._getRect(v, tileset);
-      // console.log('for v: ' + v + ' r: ' + r.x, r.y, r.width, r.height);
-
+        var r = this._getRect(v, tileset);
 
         var b = new PIXI.Texture(tileset.texture, r);
         var sprite = new PIXI.Sprite(b);
         sprite.position.x = x;
         sprite.position.y = y;
         this.data.addChild(sprite);
-
-    }
+      }
+      
       x += this.tile_width;
 
       if ((i+1) % this.map_width == 0)
@@ -134,9 +125,6 @@ K.MapLoader.prototype._interpretJSON = function(json)
         x = 0;
         y += this.tile_height;
       }
-
-
-
     }
   }
 
