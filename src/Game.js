@@ -14,7 +14,10 @@ K.Game = function(fps)
   // Current FPS that limits the rendering
   this.requestedFrameRate = 1000 / fps;
 
-  this.renderer = new PIXI.CanvasRenderer(w, h);
+  this.renderer = new PIXI.autoDetectRenderer(w, h);
+
+  this.isWebGL = (this.renderer instanceof PIXI.WebGLRenderer) ? true : false;
+
   document.body.appendChild(this.renderer.view);
   document.body.style.margin = 0;
 

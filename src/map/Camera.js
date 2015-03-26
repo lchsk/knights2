@@ -30,7 +30,7 @@ K.Camera = function(width, height, game)
   this._screen_pct = [0.1, 0.9, 0.9, 0.1];
 
   // How fast a user can scroll the map
-  this.speed = 3;
+  this.speed = 5;
 
 };
 

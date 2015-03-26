@@ -15,7 +15,6 @@ K.MapLoader = function(game, filename)
   // Map data
   this.data = new PIXI.DisplayObjectContainer();
   this.camera = new PIXI.DisplayObjectContainer();
-  console.log(this.camera);
 
   this.world.addChild(this.data);
 
@@ -117,7 +116,7 @@ K.MapLoader.prototype._interpretJSON = function(json)
         sprite.position.y = y;
         this.data.addChild(sprite);
       }
-      
+
       x += this.tile_width;
 
       if ((i+1) % this.map_width == 0)
