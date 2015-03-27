@@ -58,13 +58,28 @@
                 {
                  "name":"New Terrain",
                  "tile":138
+                }, 
+                {
+                 "name":"New Terrain",
+                 "tile":0
                 }],
          "tileheight":32,
          "tileproperties":
             {
              "0":
                 {
-                 "walkale":"true"
+                 "walkable":"true"
+                },
+             "1":
+                {
+                 "walkable":"false"
+                }
+            },
+         "tiles":
+            {
+             "0":
+                {
+                 "terrain":[0, 0, 0, 0]
                 }
             },
          "tilewidth":32
@@ -82,6 +97,13 @@
             },
          "spacing":0,
          "tileheight":32,
+         "tileproperties":
+            {
+             "0":
+                {
+                 "walkable":"false"
+                }
+            },
          "tilewidth":32
         }],
  "tilewidth":32,

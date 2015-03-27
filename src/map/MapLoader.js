@@ -8,6 +8,8 @@ K.MapLoader = function(game, filename)
 
   this.tilesets = [];
 
+  this.tileproperties = {};
+
   var loader = new K.JSONLoader(filename);
   loader.loadJSON(this._interpretJSON.bind(this));
   this.world = new PIXI.DisplayObjectContainer();
@@ -36,11 +38,29 @@ K.MapLoader.prototype._getRect = function(id, tileset)
   return r;
 };
 
+K.MapLoader.prototype._loadTileProperties = function(tileset)
+{
+  var properties = tileset.tileproperties;
+
+  if (properties)
+  {
+    var first = tileset.firstgid;
+    for (var p in properties)
+    {
+      var id = first + parseInt(p);
+      this.tileproperties[id] = K.Helper.fixObjectDataTypes(properties[p]);
+    }
+  }
+};
+
 K.MapLoader.prototype._loadTilesets = function(json)
 {
   for (var i = 0; i < json.tilesets.length; i++)
   {
     var tileset = json.tilesets[i];
+
+    this._loadTileProperties(tileset);
+
     var path = tileset.image.split("/");
     var image = path[path.length - 1];
 
@@ -101,34 +121,34 @@ K.MapLoader.prototype._interpretJSON = function(json)
     var x = 0;
     var y = 0;
 
-    for(var i = 0; i < json.layers[j].data.length; i++)
+    if (json.layers[j].visible)
     {
-      var v = json.layers[j].data[i];
-
-      if (v > 0)
+      for(var i = 0; i < json.layers[j].data.length; i++)
       {
-        var tileset = this._getTileset(v)
-        var r = this._getRect(v, tileset);
+        var v = json.layers[j].data[i];
 
-        var b = new PIXI.Texture(tileset.texture, r);
-        var sprite = new PIXI.Sprite(b);
-        sprite.position.x = x;
-        sprite.position.y = y;
-        this.data.addChild(sprite);
-      }
+        if (v > 0)
+        {
+          var tileset = this._getTileset(v)
+          var r = this._getRect(v, tileset);
 
-      x += this.tile_width;
+          var b = new PIXI.Texture(tileset.texture, r);
+          var sprite = new PIXI.Sprite(b);
+          sprite.position.x = x;
+          sprite.position.y = y;
+          this.data.addChild(sprite);
+        }
 
-      if ((i+1) % this.map_width == 0)
-      {
-        x = 0;
-        y += this.tile_height;
+        x += this.tile_width;
+
+        if ((i+1) % this.map_width == 0)
+        {
+          x = 0;
+          y += this.tile_height;
+        }
       }
     }
   }
-
-  // this.game.stage.position.x = 20;
-  // this.game.stage.scale.x = 0.5;
 
   this.game.create.bind(this.game)();
 };

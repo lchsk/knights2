@@ -2,8 +2,8 @@ K.Game = function(fps)
 {
   // this.renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
 
-  var w = window.innerWidth;
-  var h = window.innerHeight;
+  this.width = window.innerWidth;
+  this.height = window.innerHeight;
 
   // Last time when the frame was updated
   this.lastTime = Date.now();
@@ -14,7 +14,10 @@ K.Game = function(fps)
   // Current FPS that limits the rendering
   this.requestedFrameRate = 1000 / fps;
 
-  this.renderer = new PIXI.autoDetectRenderer(w, h);
+  this.renderer = new PIXI.autoDetectRenderer(this.width, this.height);
+
+  window.addEventListener('orientationchange', this.resize.bind(this), false);
+  window.addEventListener('resize', this.resize.bind(this), false);
 
   this.isWebGL = (this.renderer instanceof PIXI.WebGLRenderer) ? true : false;
 
@@ -23,10 +26,12 @@ K.Game = function(fps)
 
   this.stage = new PIXI.Stage(0xFF0000);
 
+
+
   this.map = new K.MapLoader(this, './test.json');
   // map is loaded asynchronously!!!
 
-  this.camera = new K.Camera(w, h, this);
+  this.camera = new K.Camera(this.width, this.height, this);
 
 };
 
@@ -38,8 +43,31 @@ K.Game.prototype.create = function()
   // this.camera.set(500, 0);
   // this.camera.animateTo(1000, 200, 3);
 
+  //
+  // var graphics = new PIXI.Graphics();
+  //
+  // graphics.beginFill(0x000000);
+  // graphics.fillAlpha = 0.5;
+  //
+  // // set the line style to have a width of 5 and set the color to red
+  // // graphics.lineStyle(5, 0xFF00FF);
+  //
+  // // draw a rectangle
+  // graphics.drawRect(0, 0, 300, 200);
+  //
+  // this.stage.addChild(graphics);
+
+  //
+
   this.draw();
 };
+
+K.Game.prototype.resize = function()
+{
+  this.camera.width = this.width = window.innerWidth;
+  this.camera.height = this.height = window.innerHeight;
+  this.renderer.resize(this.width, this.height);
+}
 
 K.Game.prototype.frameRate = function()
 {
