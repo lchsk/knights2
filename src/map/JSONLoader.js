@@ -5,22 +5,25 @@ K.JSONLoader = function(filename)
 
 K.JSONLoader.prototype.constructor = K.JSONLoader;
 
-K.JSONLoader.prototype.loadJSON = function(on_success)
+K.JSONLoader.load = function(filename, on_success)
 {
-  this._loadJSON(function(response) {
-    on_success(JSON.parse(response));
-
-  });
+  K.JSONLoader._loadJSON(filename,
+    function(response)
+    {
+      on_success(JSON.parse(response));
+    }
+  );
 };
 
-K.JSONLoader.prototype._loadJSON = function(callback)
+K.JSONLoader._loadJSON = function(filename, callback)
 {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open('GET', this.filename, true); // Replace 'my_data' with the path to your file
-  xobj.onreadystatechange = function () {
-    if (xobj.readyState == 4 && xobj.status == "200") {
-      // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+  xobj.open('GET', filename, true);
+  xobj.onreadystatechange = function()
+  {
+    if (xobj.readyState == 4 && xobj.status == "200")
+    {
       callback(xobj.responseText);
     }
   };

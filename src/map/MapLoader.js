@@ -1,17 +1,18 @@
-K.MapLoader = function(game, filename)
+K.MapLoader = function(loader, filename)
 {
   // Map filename
   this.filename = filename;
 
   // Game object
-  this.game = game;
+  this.loader = loader;
+  this.game = this.loader.game;
 
   this.tilesets = [];
 
   this.tileproperties = {};
+  // this.debugLayerTmp = {};
+  this.tmp = false;
 
-  var loader = new K.JSONLoader(filename);
-  loader.loadJSON(this._interpretJSON.bind(this));
   this.world = new PIXI.DisplayObjectContainer();
 
   // Map data
@@ -21,10 +22,16 @@ K.MapLoader = function(game, filename)
   this.world.addChild(this.data);
 
   this.game.stage.addChild(this.world);
-  this.game.stage.renderable = false;
+  // this.game.stage.renderable = false;
 };
 
 K.MapLoader.prototype.constructor = K.MapLoader;
+
+K.MapLoader.prototype.load = function()
+{
+  K.JSONLoader.load(this.filename, this._interpretJSON.bind(this));
+  // loader.loadJSON(this._interpretJSON.bind(this));
+};
 
 K.MapLoader.prototype._getRect = function(id, tileset)
 {
@@ -104,6 +111,8 @@ K.MapLoader.prototype._interpretJSON = function(json)
   // Number of tiles
   this.map_height = json.width;
 
+  this.tmp = K.Helper.createArray(this.map_width, this.map_height);
+
   // Pixels
   this.tile_width = json.tilewidth;
 
@@ -137,11 +146,13 @@ K.MapLoader.prototype._interpretJSON = function(json)
           sprite.position.x = x;
           sprite.position.y = y;
           this.data.addChild(sprite);
+
+          this._addDebugItem(v, x, y);
         }
 
         x += this.tile_width;
 
-        if ((i+1) % this.map_width == 0)
+        if ((i + 1) % this.map_width == 0)
         {
           x = 0;
           y += this.tile_height;
@@ -150,5 +161,76 @@ K.MapLoader.prototype._interpretJSON = function(json)
     }
   }
 
-  this.game.create.bind(this.game)();
+  this._drawDebugLayer();
+
+  this.loader.next();
+  // this.game.create.bind(this.game)();
+};
+
+K.MapLoader.prototype._addDebugItem = function(id, x, y)
+{
+  if (this.tileproperties[id])
+  {
+    // var key = { 'x' : x, 'y' : y };
+
+    var colour = false;
+
+    if (this.tileproperties[id]['walkable'])
+      colour = 0x00FF00;
+    else
+      colour = 0xFF0000;
+
+    if (colour)
+    {
+      // this.debugLayerTmp[x] = this.debugLayerTmp[x] || {};
+      // this.debugLayerTmp[x][y] = colour;
+      this.tmp[x/32][y/32] = colour;
+      // this._test(x,y);
+    }
+  }
+};
+
+K.MapLoader.prototype._test = function(x, y)
+{
+  this.game.debugLayer.beginFill(this.tmp[x][y], 0.5);
+  this.game.debugLayer.drawRect(x*32, y*32, 32, 32);
+  this.game.debugLayer.endFill();
+};
+
+K.MapLoader.prototype._drawDebugLayer = function()
+{
+  console.log(this.tmp);
+
+  for (var i = 0; i < 50; i++)
+  {
+    for (var j = 0; j < 50; j++)
+    {
+      if (this.tmp[i][j])
+      {
+        this._test(i, j);
+      }
+    }
+  }
+
+  var i = 0;
+  for (var x in this.debugLayerTmp)
+  {
+    if (this.debugLayerTmp.hasOwnProperty(x))
+    {
+      for (var y in this.debugLayerTmp[x])
+      {
+        if (this.debugLayerTmp[x].hasOwnProperty(y))
+        {
+          i++;
+          // console.log(x, y, this.debugLayerTmp[x][y]);
+          // this._test(x, y);
+
+          // if (i > 1)
+            // return;
+
+        }
+      }
+    }
+  }
+  console.log(i);
 };

@@ -73,6 +73,10 @@
              "1":
                 {
                  "walkable":"false"
+                },
+             "138":
+                {
+                 "walkable":"false"
                 }
             },
          "tiles":

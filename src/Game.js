@@ -24,15 +24,17 @@ K.Game = function(fps)
   document.body.appendChild(this.renderer.view);
   document.body.style.margin = 0;
 
-  this.stage = new PIXI.Stage(0xFF0000);
-
-
-
-  this.map = new K.MapLoader(this, './test.json');
-  // map is loaded asynchronously!!!
-
+  this.stage = new PIXI.Stage(0x000000);
+  this.debugLayer = new PIXI.Graphics();
   this.camera = new K.Camera(this.width, this.height, this);
 
+  this.loader = new K.Loader(this);
+  this.loader.load();
+
+  // this.map = new K.MapLoader(this, './test.json');
+  // map is loaded asynchronously!!!
+
+  this.map;
 };
 
 K.Game.prototype.constructor = K.Game;
@@ -43,21 +45,9 @@ K.Game.prototype.create = function()
   // this.camera.set(500, 0);
   // this.camera.animateTo(1000, 200, 3);
 
-  //
-  // var graphics = new PIXI.Graphics();
-  //
-  // graphics.beginFill(0x000000);
-  // graphics.fillAlpha = 0.5;
-  //
-  // // set the line style to have a width of 5 and set the color to red
-  // // graphics.lineStyle(5, 0xFF00FF);
-  //
-  // // draw a rectangle
-  // graphics.drawRect(0, 0, 300, 200);
-  //
-  // this.stage.addChild(graphics);
+  this.stage.addChild(this.debugLayer);
 
-  //
+
 
   this.draw();
 };
@@ -97,6 +87,10 @@ K.Game.prototype.draw = function()
 
   this.map.world.position.x = - this.camera._x;
   this.map.world.position.y = - this.camera._y;
+
+  this.debugLayer.position.x = - this.camera._x;
+  this.debugLayer.position.y = - this.camera._y;
+
 
   if ((Date.now() - this.lastTime) >= this.requestedFrameRate)
   {

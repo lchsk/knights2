@@ -1,1 +1,3 @@
-var K = K || {};
+var K = K || {
+  'DEBUG' : true
+};
