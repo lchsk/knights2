@@ -199,7 +199,6 @@ K.MapLoader.prototype._test = function(x, y)
 
 K.MapLoader.prototype._drawDebugLayer = function()
 {
-  console.log(this.tmp);
 
   for (var i = 0; i < 50; i++)
   {
@@ -232,5 +231,4 @@ K.MapLoader.prototype._drawDebugLayer = function()
       }
     }
   }
-  console.log(i);
 };

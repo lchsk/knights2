@@ -1,0 +1,24 @@
+{
+	"id": "archer",
+	"tile_width": 64,
+	"tile_height": 64,
+	"animations": {
+		"bow": {
+			"file": "knights_archer_bow.png",
+			"directions": {
+				"top":{
+					"frames": [0, 12]
+				},
+				"left":{
+					"frames": [13, 25]
+				},
+				"bottom":{
+					"frames": [26, 38]
+				},
+				"right":{
+					"frames": [39, 51]
+				}
+			}
+		}
+	}
+}

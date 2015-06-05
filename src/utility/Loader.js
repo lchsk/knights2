@@ -4,16 +4,24 @@ K.Loader = function(gameObject)
   this.list = [];
   this.currentID = 0;
 
-  this._prepareMap();
+
+
+  this.game.map = new K.MapLoader(this, './test.json');
+
+  this.list.push(this.game.map);
+
+  this.game.animations = new K.AnimationLoader(this, './animations/animations.json');
+  // this.list.push(this.game.animations);
+
+  // this._prepareMap();
+
+  this._updateList();
 };
 
 K.Loader.prototype.constructor = K.Loader;
 
 K.Loader.prototype._prepareMap = function()
 {
-  this.game.map = new K.MapLoader(this, './test.json');
-  this.list.push(this.game.map);
-  this._updateList();
 };
 
 K.Loader.prototype._updateList = function()

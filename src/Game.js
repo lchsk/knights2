@@ -28,8 +28,12 @@ K.Game = function(fps)
   this.debugLayer = new PIXI.Graphics();
   this.camera = new K.Camera(this.width, this.height, this);
 
+
+
   this.loader = new K.Loader(this);
   this.loader.load();
+
+
 
   // this.map = new K.MapLoader(this, './test.json');
   // map is loaded asynchronously!!!
@@ -44,11 +48,18 @@ K.Game.prototype.create = function()
 {
   // this.camera.set(500, 0);
   // this.camera.animateTo(1000, 200, 3);
+  this.objects = new PIXI.DisplayObjectContainer();
+  this.stage.addChild(this.objects);
 
-  this.stage.addChild(this.debugLayer);
+  var b = new PIXI.Texture(this.animations.T['knights_archer_bow.png'], new PIXI.Rectangle(0,0,64,64));
+  var bb = new PIXI.Sprite(b);
+  bb.position.x = 300;
+  bb.position.y = 200;
+  this.objects.addChild(bb);
 
+  // console.log(b);
 
-
+  // this.stage.addChild(this.debugLayer);
   this.draw();
 };
 
@@ -79,10 +90,10 @@ K.Game.prototype.draw = function()
   {
     this.camera.set(5000, 0);
   }
-  //
-  // // if (K.Key.isDown(K.Key.RIGHT))
+
+  // if (K.Key.isDown(K.Key.RIGHT))
   // {
-  //   this.camera.animateTo(5000, 0);
+  //   this.camera.animateTo(100, 0);
   // }
 
   this.map.world.position.x = - this.camera._x;
