@@ -10,7 +10,7 @@ K.Loader = function(gameObject)
 
   this.list.push(this.game.map);
 
-  this.game.animations = new K.AnimationLoader(this, './animations/animations.json');
+  this.game.data = new K.AnimationLoader(this, './animations/animations.json');
   // this.list.push(this.game.animations);
 
   // this._prepareMap();

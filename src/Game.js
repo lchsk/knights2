@@ -27,7 +27,7 @@ K.Game = function(fps)
   this.stage = new PIXI.Stage(0x000000);
   this.debugLayer = new PIXI.Graphics();
   this.camera = new K.Camera(this.width, this.height, this);
-
+  this.objects = new PIXI.DisplayObjectContainer();
 
 
   this.loader = new K.Loader(this);
@@ -48,14 +48,16 @@ K.Game.prototype.create = function()
 {
   // this.camera.set(500, 0);
   // this.camera.animateTo(1000, 200, 3);
-  this.objects = new PIXI.DisplayObjectContainer();
+
   this.stage.addChild(this.objects);
 
-  var b = new PIXI.Texture(this.animations.T['knights_archer_bow.png'], new PIXI.Rectangle(0,0,64,64));
-  var bb = new PIXI.Sprite(b);
-  bb.position.x = 300;
-  bb.position.y = 200;
-  this.objects.addChild(bb);
+  var k = new K.Human("knights", "archer", this);
+  k.setAnimation("attack");
+
+  console.log(k);
+
+
+  this.objects.addChild(k);
 
   // console.log(b);
 
@@ -80,6 +82,12 @@ K.Game.prototype.frameRate = function()
 K.Game.prototype.update = function()
 {
   this.camera.update();
+
+  // for (var o in this.objects)
+  for (var i = 0; i < this.objects.children.length; i++)
+  {
+      this.objects.children[i].update();
+  }
 };
 
 K.Game.prototype.draw = function()
@@ -101,6 +109,9 @@ K.Game.prototype.draw = function()
 
   this.debugLayer.position.x = - this.camera._x;
   this.debugLayer.position.y = - this.camera._y;
+
+  this.objects.position.x = - this.camera._x;
+  this.objects.position.y = - this.camera._y;
 
 
   if ((Date.now() - this.lastTime) >= this.requestedFrameRate)

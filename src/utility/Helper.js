@@ -5,6 +5,37 @@ K.Helper = function()
 
 K.Helper.prototype.constructor = K.Helper;
 
+K.Helper.getRectangle = function(id, columns, tilewidth, tileheight)
+{
+    var h = (id) % columns;
+    var v = Math.floor(id / columns);
+
+    var r = new PIXI.Rectangle(h * tilewidth, v * tileheight, tilewidth, tileheight);
+
+    return r;
+};
+
+K.Helper.generateList = function(firstIndex, lastIndex, difference)
+{
+    var tmp = [];
+
+    // for (var i = firstIndex; i <= lastIndex; i += difference)
+    var i = 0;
+    var lenght = Math.abs(firstIndex - lastIndex) + 1;
+    var value = firstIndex;
+
+    // console.log(firstIndex + ' ' + lastIndex  + ' ' + length);
+
+    while (i < lenght)
+    {
+        tmp.push(value);
+        i++;
+        value += difference;
+    }
+
+    return tmp;
+};
+
 K.Helper.fixObjectDataTypes = function(object)
 {
   for (var obj in object)

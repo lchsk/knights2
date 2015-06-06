@@ -1,0 +1,66 @@
+{
+	"id": "archer",
+	"side": "knights",
+	"name": "Archer",
+	"tile_width": 64,
+	"tile_height": 64,
+	"animations": {
+		"attack": {
+			"file": "knights_archer_bow.png",
+			"speed" : 0.3,
+			"loop" : true,
+			"directions": {
+				"top":{
+					"frames": [0, 12]
+				},
+				"left":{
+					"frames": [18, 25]
+				},
+				"bottom":{
+					"frames": [26, 38]
+				},
+				"right":{
+					"frames": [39, 51]
+				}
+			}
+		},
+		"prepare_to_fight": {
+			"file": "knights_archer_bow.png",
+			"speed" : 0.25,
+			"loop" : false,
+			"directions": {
+				"top":{
+					"frames": [0, 12]
+				},
+				"left":{
+					"frames": [13, 17]
+				},
+				"bottom":{
+					"frames": [26, 38]
+				},
+				"right":{
+					"frames": [39, 51]
+				}
+			}
+		},
+		"hide_weapon": {
+			"file": "knights_archer_bow.png",
+			"speed" : 0.25,
+			"loop" : false,
+			"directions": {
+				"top":{
+					"frames": [0, 12]
+				},
+				"left":{
+					"frames": [17, 13]
+				},
+				"bottom":{
+					"frames": [26, 38]
+				},
+				"right":{
+					"frames": [39, 51]
+				}
+			}
+		}
+	}
+}
