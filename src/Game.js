@@ -24,10 +24,14 @@ K.Game = function(fps)
   document.body.appendChild(this.renderer.view);
   document.body.style.margin = 0;
 
-  this.stage = new PIXI.Stage(0x000000);
+  this.stage = new PIXI.Container();
   this.debugLayer = new PIXI.Graphics();
   this.camera = new K.Camera(this.width, this.height, this);
-  this.objects = new PIXI.DisplayObjectContainer();
+
+  this.stage.interactive = true;
+  this.stage.on('mousemove', this.camera._mousemove.bind(this.camera));
+
+  this.objects = new PIXI.Container();
 
 
   this.loader = new K.Loader(this);
@@ -55,6 +59,16 @@ K.Game.prototype.create = function()
   k.setAnimation("attack");
 
   console.log(k);
+
+   var graph = new Graph([
+        [1,1,1,1],
+        [0,1,1,0],
+        [0,0,1,1]
+    ]);
+    var start = graph.grid[0][0];
+    var end = graph.grid[1][2];
+    var result = astar.search(graph, start, end);
+    console.log(result);
 
 
   this.objects.addChild(k);

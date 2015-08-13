@@ -3,6 +3,8 @@ K.MapLoader = function(loader, filename)
   // Map filename
   this.filename = filename;
 
+  this.tiles_path = "images/";
+
   // Game object
   this.loader = loader;
   this.game = this.loader.game;
@@ -13,11 +15,11 @@ K.MapLoader = function(loader, filename)
   // this.debugLayerTmp = {};
   this.tmp = false;
 
-  this.world = new PIXI.DisplayObjectContainer();
+  this.world = new PIXI.Container();
 
   // Map data
-  this.data = new PIXI.DisplayObjectContainer();
-  this.camera = new PIXI.DisplayObjectContainer();
+  this.data = new PIXI.Container();
+  this.camera = new PIXI.Container();
 
   this.world.addChild(this.data);
 
@@ -73,7 +75,7 @@ K.MapLoader.prototype._loadTilesets = function(json)
 
     var obj = {}
     obj['name'] = image;
-    obj['texture'] = PIXI.Texture.fromImage(image);
+    obj['texture'] = PIXI.Texture.fromImage(this.tiles_path + image);
     obj['first_id'] = tileset.firstgid;
     obj['tilewidth'] = tileset.tilewidth;
     obj['tileheight'] = tileset.tileheight;

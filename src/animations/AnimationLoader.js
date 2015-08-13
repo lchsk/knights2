@@ -34,7 +34,11 @@ K.AnimationLoader.prototype.readAnimationData = function(json)
 
   for (var i in json.animations)
   {
-    this.T[json.animations[i].file] = PIXI.Texture.fromImage(json.animations[i].file);
+    if ( ! this.T.hasOwnProperty(json.animations[i].file))
+    {
+      console.log('Loading: ' + json.animations[i].file);
+      this.T[json.animations[i].file] = PIXI.Texture.fromImage("images/" + json.animations[i].file);
+    }
 
     // How many columns of tiles are in this texture
     var columns = this.T[json.animations[i].file].width / json.tile_width;

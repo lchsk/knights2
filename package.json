@@ -1,0 +1,8 @@
+{
+    "name" : "knights2",
+    "title" : "knights2",
+    "version" : "1.0.0",
+    "devDependencies": {
+	"pixi.js" : "3.0.7"
+    }
+}

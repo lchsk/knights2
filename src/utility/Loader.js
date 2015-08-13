@@ -6,7 +6,7 @@ K.Loader = function(gameObject)
 
 
 
-  this.game.map = new K.MapLoader(this, './test.json');
+  this.game.map = new K.MapLoader(this, './maps/untitled.json');
 
   this.list.push(this.game.map);
 

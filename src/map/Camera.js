@@ -25,53 +25,67 @@ K.Camera = function(width, height, game)
   this._x = 0;
   this._y = 0;
 
+  // Current mouse position
+  this.mouse = new PIXI.Point(0, 0);
+
   // Part of the screen which triggers moving the camera
   // top, right, bottom, left
   this._screen_pct = [0.1, 0.9, 0.9, 0.1];
 
   // How fast a user can scroll the map
-  this.speed = 5;
+  this.speed = 0.1;
 
 };
 
 K.Camera.prototype.constructor = K.Camera;
 
+K.Camera.prototype._mousemove = function(mouseData)
+{
+    if (mouseData)
+    {
+        this.mouse.x = mouseData.data.global.x;
+        this.mouse.y = mouseData.data.global.y;
+    }
+};
+
 K.Camera.prototype._updateUserScrolling = function()
 {
   if (this.isAutoMoving) return;
 
-  var mouse = this.game.stage.getMousePosition();
+  var dt = this.game.timeSinceLastFrame;
+
+  // var mouse = this.game.stage.getMousePosition();
 
   // a simple hack to override initial value of the mouse position
-  if (mouse.x == 0 && mouse.y == 0) return;
+  // if (mouse.x == 0 && mouse.y == 0) return;
 
-  var w = mouse.x / this.width;
-  var h = mouse.y / this.height;
+  var w = this.mouse.x / this.width;
+  var h = this.mouse.y / this.height;
 
   var moved = false;
 
   if (w >= 0 && w < this._screen_pct[3])
   {
     // Move left
-    this._x -= this.speed;
+    this._x -= this.speed * dt;
     moved = true;
   }
   if (w > this._screen_pct[1] && w <= 1)
   {
     // Move right
-    this._x += this.speed;
+    this._x += this.speed * dt;
     moved = true;
   }
   if (h >= 0 && h < this._screen_pct[0])
   {
     // Move up
-    this._y -= this.speed;
+    this._y -= this.speed * dt;
     moved = true;
   }
   if (h <= 1 && h > this._screen_pct[2])
   {
     // Move down
-    this._y += this.speed;
+    this._y += this.speed * dt;
     moved = true;
   }
 

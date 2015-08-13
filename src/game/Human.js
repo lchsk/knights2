@@ -1,6 +1,6 @@
 K.Human = function(side, id, game)
 {
-  PIXI.MovieClip.call(this, []);
+  PIXI.extras.MovieClip.call(this, []);
 
   // knights or skeletons
   this.side = side;
@@ -38,7 +38,7 @@ K.Human = function(side, id, game)
 
 };
 
-K.Human.prototype = Object.create(PIXI.MovieClip.prototype);
+K.Human.prototype = Object.create(PIXI.extras.MovieClip.prototype);
 K.Human.prototype.constructor = K.Human;
 
 K.Human.prototype.setAnimation = function(name)
